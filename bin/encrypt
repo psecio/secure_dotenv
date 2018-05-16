@@ -1,0 +1,63 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+$cmd = new Cmd\Command();
+$args = $cmd->execute($_SERVER['argv']);
+
+$climate = new League\CLImate\CLImate;
+$keyPath = __DIR__.'/keyfile';
+
+$input = $climate->input('Location of the .env file:');
+$envFile = $input->prompt();
+
+if (empty($envFile)) {
+    $envFile = __DIR__.'/.env';
+}
+
+// Step 1: Set up the location to the .env file
+if (substr($envFile, 0, '1') !== '/') {
+    $envFile = __DIR__.'/'.$envFile;
+}
+$envFile = realpath($envFile);
+
+if ($envFile == false || !is_file($envFile)) {
+    throw new \InvalidArgumentException('Invalid .env location: '.$envFile);
+}
+$climate->out('Env path: '.$envFile);
+
+// Step 2: Take in the key name for the encrypted value
+$input = $climate->input('Keyname:');
+$envName = $input->prompt();
+
+if (empty($envName)) {
+    throw new \InvalidArgumentException('Invalid key name: '.$envName);
+}
+
+// Step 3: Take in the value to encrypt
+$input = $climate->input('Value:');
+$envValue = $input->prompt();
+
+if (empty($envValue)) {
+    throw new \InvalidArgumentException('Invalid value: '.$envValue);
+}
+
+// Step 4: Try to write the encrypted value to the .env file
+try {
+    $overwrite = false;
+    if (isset($args['overwrite']) && $args['overwrite'] == true) {
+        $overwrite = true;
+    }
+
+    $d = new \Psecio\SecureDotenv\Parser($keyPath, $envFile);
+
+    if ($d->save($envName, $envValue, $overwrite)) {
+        $climate->out('Encrypted value for "'.$envName.'" has been added to '.$envFile);
+    } else {
+        $climate->to('error')->red('Something went wrong writing the value to '.$envFile);
+    }
+
+} catch (\Exception $e) {
+    $climate->to('error')->red('ERROR: '.$e->getMessage());
+}
