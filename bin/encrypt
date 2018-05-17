@@ -1,29 +1,42 @@
 #!/usr/bin/env php
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
-
-$cmd = new Cmd\Command();
-$args = $cmd->execute($_SERVER['argv']);
+require_once getcwd().'/vendor/autoload.php';
 
 $climate = new League\CLImate\CLImate;
-$keyPath = __DIR__.'/keyfile';
+$cmd = new Cmd\Command();
+
+try {    
+    $config = [
+        'required' => ['keyfile']
+    ];
+    $args = $cmd->execute($_SERVER['argv'], $config);
+} catch (\Exception $e) {
+    die($e->getMessage()."\n\n");
+}
+
+$keyPath = $args['keyfile'];
+if (!is_file($keyPath)) {
+    $climate->to('error')->red('Invalid key file location: '.$keyPath);
+    die();
+}
 
 $input = $climate->input('Location of the .env file:');
 $envFile = $input->prompt();
 
 if (empty($envFile)) {
-    $envFile = __DIR__.'/.env';
+    $envFile = getcwd().'/.env';
 }
 
 // Step 1: Set up the location to the .env file
 if (substr($envFile, 0, '1') !== '/') {
-    $envFile = __DIR__.'/'.$envFile;
+    $envFile = getcwd().'/'.$envFile;
 }
 $envFile = realpath($envFile);
 
 if ($envFile == false || !is_file($envFile)) {
-    throw new \InvalidArgumentException('Invalid .env location: '.$envFile);
+    $climate->to('error')->red('Invalid .env location: '.$envFile."\n");
+    die();
 }
 $climate->out('Env path: '.$envFile);
 
@@ -32,7 +45,8 @@ $input = $climate->input('Keyname:');
 $envName = $input->prompt();
 
 if (empty($envName)) {
-    throw new \InvalidArgumentException('Invalid key name: '.$envName);
+    $climate->to('error')->red('Invalid key name: '.$envName."\n");
+    die();
 }
 
 // Step 3: Take in the value to encrypt
@@ -40,7 +54,8 @@ $input = $climate->input('Value:');
 $envValue = $input->prompt();
 
 if (empty($envValue)) {
-    throw new \InvalidArgumentException('Invalid value: '.$envValue);
+    $climate->to('error')->red('Invalid value: '.$envValue."\n");
+    die();
 }
 
 // Step 4: Try to write the encrypted value to the .env file
