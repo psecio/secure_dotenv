@@ -21,6 +21,6 @@
         "defuse/php-encryption": "^2.2",
         "enygma/cmd": "^0.4.0",
         "league/climate": "^3.4",
-        "m1/env": "^2.1"
+        "m1/env": "3589eae8e40d40be96de39222a6ca19c3af8eae4"
     }
 }
