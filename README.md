@@ -35,7 +35,6 @@ With both of those created, you can create a new instance that can be used to re
 
 ```php
 <?php
-
 require_once __DIR__.'/vendor/autoload.php';
 
 $keyfile = __DIR__.'/keyfile';
@@ -47,6 +46,31 @@ $d = new \Psecio\SecureDotenv\Parser($keyfile, $envFile);
 print_r($d->getContent());
 ?>
 ```
+
+## Setting values
+
+You can also dynamically set values into your `.env` file using the `save()` method on the `Parser` class:
+
+```php
+<?php
+require_once __DIR__.'/vendor/autoload.php';
+
+$keyfile = __DIR__.'/keyfile';
+$envFile = __DIR__.'/.env';
+
+$d = new \Psecio\SecureDotenv\Parser($keyfile, $envFile);
+
+$keyName = 'test1';
+$keyValue = 'foobarbaz';
+
+if ($d->asve($keyName, $keyValue)) {
+    echo 'Save successful';
+} else {
+    echo 'There was an error while saving the value.';
+}
+```
+
+There's no need to worry about encrypting the value as the library takes care of that for you and outputs the encrypted result to the `.env` file.
 
 ## Encrypting values
 
