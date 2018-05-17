@@ -73,7 +73,7 @@ $d = new \Psecio\SecureDotenv\Parser($keyfile, $envFile);
 $keyName = 'test1';
 $keyValue = 'foobarbaz';
 
-if ($d->asve($keyName, $keyValue)) {
+if ($d->save($keyName, $keyValue)) {
     echo 'Save successful';
 } else {
     echo 'There was an error while saving the value.';
