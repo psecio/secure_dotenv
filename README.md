@@ -15,7 +15,11 @@ composer require psecio/secure_dotenv
 
 ## Usage
 
-To use the library, you'll need a bit of setup. First, you'll need to generate your encryption key. The library makes use of the [defuse/php-encryption](https://github.com/defuse/php-encryption) library for it's encryption handling. If you don't already have a key, you can use a tool included with that library to generate one:
+To use the library, you'll need a bit of setup. 
+
+### Generate the key
+
+First, you'll need to generate your encryption key. The library makes use of the [defuse/php-encryption](https://github.com/defuse/php-encryption) library for it's encryption handling. If you don't already have a key, you can use a tool included with that library to generate one:
 
 ```
 php vendor/bin/generate-defuse-key
@@ -25,11 +29,15 @@ This will result in a randomized string of the correct length to use with the `p
 
 > **NOT:** According to security best practices, this key file should remain outside of the document root (not web accessible) but still should be readable by the web server user (or executing user).
 
+### Create the `.env` file
+
 You'll then need to make the `.env` file you're wanting to place the values in:
 
 ```
 touch .env
 ```
+
+### Loading the values
 
 With both of those created, you can create a new instance that can be used to read the encrypted values:
 
@@ -46,6 +54,8 @@ $d = new \Psecio\SecureDotenv\Parser($keyfile, $envFile);
 print_r($d->getContent());
 ?>
 ```
+
+If there are values currently in your `.env` file that are unencrypted, the library will pass them over and just return the plain-text version as pulled directly from the `.env` configuration.
 
 ## Setting values
 
