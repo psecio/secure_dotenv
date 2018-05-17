@@ -1,6 +1,6 @@
 # secure_dotenv
 
-The `secure_dotenv` library provides an easy way to handle the encryption and decryption of the information on your `.env` file.
+The `secure_dotenv` library provides an easy way to handle the encryption and decryption of the information in your `.env` file.
 
 One of the generally accepted security best practices is preventing the use of hard-coded, plain-text credentials of any kind. This library allows you to store the values in your `.env` as encrypted strings but stull be able to access them transparently without worrying about implementing your own encryption method.
 
@@ -15,7 +15,7 @@ composer require psecio/secure_dotenv
 
 ## Usage
 
-To use the library, you'll need a bit of setup. 
+To use the library, you'll need a bit of setup. Once you have the following two items you will not need to perform these setup steps again.
 
 ### Generate the key
 
