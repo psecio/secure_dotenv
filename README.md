@@ -55,6 +55,23 @@ print_r($d->getContent());
 ?>
 ```
 
+You don't have to use a file as a source for the key either - you can use a string (potentially something fron an `$_ENV` variable or some other source):
+
+```php
+<?php
+require_once __DIR__.'/vendor/autoload.php';
+
+$key = $_ENV['ENCRYPTION_KEY'];
+$envFile = __DIR__.'/.env';
+
+$d = new \Psecio\SecureDotenv\Parser($key, $envFile);
+
+?>
+```
+
+This can be useful to help prevent the key from being read by a [local file inclusion](https://en.wikipedia.org/wiki/File_inclusion_vulnerability#Local_File_Inclusion) attack.
+
+
 If there are values currently in your `.env` file that are unencrypted, the library will pass them over and just return the plain-text version as pulled directly from the `.env` configuration.
 
 ## Setting values

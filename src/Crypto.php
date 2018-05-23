@@ -7,32 +7,40 @@ use Defuse\Crypto\Crypto as DefuseCrypto;
 
 class Crypto
 {
-    private $keyPath;
+    private $key;
 
-    public function __construct($keyPath)
+    public function __construct($key)
     {
-        $this->setKeypath($keyPath);
+        $this->setKey($this->createKey($key));
     }
 
-    public function setKeypath($keyPath)
+    public function createKey($key)
     {
-        if (empty($keyPath) || !is_file($keyPath)) {
-            throw new \InvalidArgumentException('Invalid key file path: '.$keyPath);
+        if (is_file($key)) {
+            $key = new KeySource\KeyFile($key);
+        } else {
+            $key = new KeySource\KeyString($key);
         }
-        $this->keyPath = $keyPath;
+
+        return $key;
+    }
+
+    public function setKey(KeySource $key)
+    {
+        $this->key = $key;
     }
 
     public function encrypt($value)
     {
         // Get the key contents, no sense in keeping it in memory for too long
-        $keyAscii = trim(file_get_contents($this->keyPath));
+        $keyAscii = trim($this->key->getContent());
         return DefuseCrypto::encrypt($value, DefuseKey::loadFromAsciiSafeString($keyAscii));
     }
 
     public function decrypt($value)
     {
         try {
-            $keyAscii = trim(file_get_contents($this->keyPath));
+            $keyAscii = trim($this->key->getContent());
             $value = DefuseCrypto::decrypt($value, DefuseKey::loadFromAsciiSafeString($keyAscii));
             
             return $value;
