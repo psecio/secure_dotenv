@@ -34,8 +34,10 @@ class Crypto
     {
         if (is_file($key)) {
             $key = new KeySource\KeyFile($key);
-        } else {
+        } elseif (is_string($key)) {
             $key = new KeySource\KeyString($key);
+        } else {
+            throw new \InvalidArgumentException('Could not create key from value provided.');
         }
 
         return $key;
@@ -49,6 +51,16 @@ class Crypto
     public function setKey(KeySource $key)
     {
         $this->key = $key;
+    }
+
+    /**
+     * Return the current key instance
+     *
+     * @return \Psecio\SecureDotenv\KeySource instance
+     */
+    public function getKey()
+    {
+        return $this->key;
     }
 
     /**

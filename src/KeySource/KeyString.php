@@ -11,9 +11,9 @@ class KeyString extends \Psecio\SecureDotenv\KeySource
      */
     public function __construct($source)
     {
-        if (!is_file($source)) {
-            throw new \InvalidArgumentException('Invalid source: '.$source);
+        if (!is_string($source)) {
+            throw new \InvalidArgumentException('Invalid source: '.print_r($source, true));
         }
-        $this->setContents(file_get_contents($source));
+        $this->setContent($source);
     }
 }

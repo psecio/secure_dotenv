@@ -22,5 +22,8 @@
         "enygma/cmd": "^0.4.0",
         "league/climate": "^3.4",
         "m1/env": "dev-master#3589eae8e40d40be96de39222a6ca19c3af8eae4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.1"
     }
 }
