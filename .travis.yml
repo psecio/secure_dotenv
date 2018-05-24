@@ -1,0 +1,8 @@
+language: php
+before_script:
+  - composer self-update
+  - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi;
+  - composer install
+php:
+  - 7.1
+script: phpunit tests/
