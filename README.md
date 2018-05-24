@@ -4,6 +4,7 @@ The `secure_dotenv` library provides an easy way to handle the encryption and de
 
 One of the generally accepted security best practices is preventing the use of hard-coded, plain-text credentials of any kind. This library allows you to store the values in your `.env` as encrypted strings but still be able to access them transparently without worrying about implementing your own encryption method.
 
+[![Travis-CI Build Status](https://secure.travis-ci.org/psecio/secure_dotenv.png?branch=master)](http://travis-ci.org/psecio/secure_dotenv)
 
 ## Installation
 
