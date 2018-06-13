@@ -1,6 +1,7 @@
 <?php
 namespace Psecio\SecureDotenv;
 
+use Psecio\SecureDotenv\KeySource\KeyString;
 use PHPUnit\Framework\TestCase;
 
 class CryptoTest extends TestCase
@@ -11,7 +12,7 @@ class CryptoTest extends TestCase
         $c = new Crypto($keyString);
         $k = $c->getKey();
 
-        $this->assertInstanceOf('\\Psecio\\SecureDotenv\\KeySource\\KeyString', $k);
+        $this->assertInstanceOf(KeyString::class, $k);
         $this->assertEquals($k->getContent(), $keyString);
     }
 
@@ -35,8 +36,24 @@ class CryptoTest extends TestCase
         $c = new Crypto(__DIR__.'/test-encryption-key.txt');
         $encrypted = $c->encrypt($value);
 
-        $this->assertFalse($value == $encrypted);
+        $this->assertNotEquals($value, $encrypted);
         $this->assertEquals($value, $c->decrypt($encrypted));
 
+    }
+
+    public function testDecryptWithInvalidValue()
+    {
+        $c = new Crypto(__DIR__.'/test-encryption-key.txt');
+
+        $this->assertNull($c->decrypt('invalid_value'));
+    }
+
+    public function testCreateKeyWithInalvidKey()
+    {
+        $c = new Crypto(__DIR__.'/test-encryption-key.txt');
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Could not create key from value provided.');
+        $c->createKey(1000);
     }
 }
