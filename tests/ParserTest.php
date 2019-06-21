@@ -8,7 +8,7 @@ class ParserTest extends TestCase
     private $keyPath;
     private $envPath;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->keyPath = __DIR__.'/test-encryption-key.txt';
         $this->envPath =  __DIR__.'/.env';
