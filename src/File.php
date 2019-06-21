@@ -18,8 +18,6 @@ class File
     public static function write($data, $path = null)
     {
         $output = '';
-        error_log('WRITING: '.print_r($data, true));
-
         foreach ($data as $index => $data) {
             // See if it's a section
             if (is_array($data)) {

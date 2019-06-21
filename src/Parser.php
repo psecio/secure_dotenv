@@ -37,6 +37,13 @@ class Parser
         $this->contents = $this->loadFile($configPath);
     }
 
+    /**
+     * Decrypt the values provided
+     * Supports sections
+     *
+     * @param array $values
+     * @return array Decrypted values
+     */
     public function decryptValues(array $values) : array
     {
         foreach ($values as $index => $value) {
@@ -53,6 +60,12 @@ class Parser
         return $values;
     }
 
+    /**
+     * Read in the configuration file
+     *
+     * @param string $configPath Configuration file path
+     * @return string
+     */
     public function loadFile($configPath)
     {
         $contents = $this->decryptValues(\Psecio\SecureDotenv\File::read($configPath));
@@ -129,9 +142,20 @@ class Parser
 
         return \Psecio\SecureDotenv\File::write($contents, $this->configPath);
     }
-
-    public function getContent()
+    
+    /**
+     * Get the contents of the current configuration file
+     *
+     * @param string $keyName Name of key to locate [optional]
+     * @return array|string
+     */
+    public function getContent($keyName = null)
     {
-        return $this->loadFile($this->configPath);
+        $contents = $this->loadFile($this->configPath);
+
+        if ($keyName !== null && isset($contents[$keyName])) {
+            return $contents[$keyName];
+        }
+        return $contents;
     }
 }

@@ -38,7 +38,7 @@ class ParserTest extends TestCase
         $parser = new Parser($this->keyPath, $this->envPath);
         $parser->setCrypto($c);
 
-        $this->assertEquals(189, $parser->save('env1', 'test1234', true));
+        $this->assertEquals(190, $parser->save('env1', 'test1234', true));
     }
 
     public function testWriteEnvWithDuplicatedEnv()
