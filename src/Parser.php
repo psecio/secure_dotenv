@@ -2,9 +2,7 @@
 
 namespace Psecio\SecureDotenv;
 
-use \M1\Env\Parser as M1Parser;
-
-class Parser extends M1Parser
+class Parser
 {
     /**
      * Path on disk to the .env configuration file
@@ -36,14 +34,42 @@ class Parser extends M1Parser
             $configPath = __DIR__.'/.env';
         }
         $this->setConfigPath($configPath);
+        $this->contents = $this->loadFile($configPath);
+    }
 
-        // Parse the contents normally, then...
-        $content = file_get_contents($configPath);
-        parent::__construct($content);
+    /**
+     * Decrypt the values provided
+     * Supports sections
+     *
+     * @param array $values
+     * @return array Decrypted values
+     */
+    public function decryptValues(array $values) : array
+    {
+        foreach ($values as $index => $value) {
+            if (is_array($value)) {
+                foreach ($value as $i => $v) {
+                    $de = $this->crypto->decrypt(trim($v));
+                    $values[$index][$i] = ($de == null) ? $v : $de;
+                }
+            } else {
+                $de = $this->crypto->decrypt(trim($value));
+                $values[$index] = ($de == null) ? $value : $de;
+            }
+        }
+        return $values;
+    }
 
-        // Reparse with our special secure value parser
-        $this->value_parser = new SecureValueParser($this, $this->crypto);
-        $this->doParse($content);
+    /**
+     * Read in the configuration file
+     *
+     * @param string $configPath Configuration file path
+     * @return string
+     */
+    public function loadFile($configPath)
+    {
+        $contents = $this->decryptValues(\Psecio\SecureDotenv\File::read($configPath));
+        return $contents;
     }
 
     /**
@@ -80,8 +106,7 @@ class Parser extends M1Parser
      */
     public function save($keyName, $keyValue, $overwrite = false)
     {
-        $ciphertext = $this->crypto->encrypt($keyValue);
-        return $this->writeEnv($keyName, $ciphertext, $overwrite);
+        return $this->writeEnv($keyName, $keyValue, $overwrite);
     }
 
     /**
@@ -93,21 +118,44 @@ class Parser extends M1Parser
      * @throws \Exception If the key name already exists and the overwrite flag isn't true
      * @return boolean Success/fail of file write
      */
-    public function writeEnv($keyName, $ciphertext, $overwrite = false)
+    public function writeEnv($keyName, $keyValue, $overwrite = false)
     {
-        // read from the .env file, update any that need it or add a new one
-        $options = M1Parser::parse(file_get_contents($this->configPath));
+        $contents = $this->loadFile($this->configPath);
 
-        if (isset($options[$keyName]) && $overwrite == false) {
+        // read from the .env file, update any that need it or add a new one
+        if (isset($contents[$keyName]) && $overwrite == false) {
             throw new \Exception('Key name "'.$keyName.'" already exists!');
         }
 
         // If it's not already set (or overwrite is true), write it out
-        $options[$keyName] = $ciphertext;
-        $lines = [];
-        foreach ($options as $keyName => $keyValue) {
-            $lines[] = $keyName.'='.$keyValue;
+        $contents[$keyName] = $keyValue;
+
+        foreach ($contents as $index => $value) {
+            if (is_array($value)) {
+                foreach ($value as $i => $v) {
+                    $contents[$index][$i] = $this->crypto->encrypt($v);
+                }
+            } else {
+                $contents[$index] = $this->crypto->encrypt($value);
+            }
         }
-        return file_put_contents($this->configPath, implode("\n", $lines));
+
+        return \Psecio\SecureDotenv\File::write($contents, $this->configPath);
+    }
+    
+    /**
+     * Get the contents of the current configuration file
+     *
+     * @param string $keyName Name of key to locate [optional]
+     * @return array|string
+     */
+    public function getContent($keyName = null)
+    {
+        $contents = $this->loadFile($this->configPath);
+
+        if ($keyName !== null && isset($contents[$keyName])) {
+            return $contents[$keyName];
+        }
+        return $contents;
     }
 }
