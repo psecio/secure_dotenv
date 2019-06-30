@@ -11,6 +11,6 @@ class KeyFileTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid source: invalid_source');
 
-        $keyFile = new KeyFile('invalid_source');
+        new KeyFile('invalid_source');
     }
 }

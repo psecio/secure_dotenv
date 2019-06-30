@@ -11,7 +11,7 @@ class File
             throw new \InvalidArgumentException('Invalid path: '.$path);
         }
 
-        $results = parse_ini_file($realpath, true);        
+        $results = parse_ini_file($realpath, true);
         return $results;
     }
 

@@ -2,7 +2,9 @@
 
 namespace Psecio\SecureDotenv\KeySource;
 
-class KeyString extends \Psecio\SecureDotenv\KeySource
+use Psecio\SecureDotenv\KeySource;
+
+class KeyString extends KeySource
 {
     /**
      * Init the object and read the file to get the key contents
