@@ -2,7 +2,9 @@
 
 namespace Psecio\SecureDotenv\KeySource;
 
-class KeyFile extends \Psecio\SecureDotenv\KeySource
+use Psecio\SecureDotenv\KeySource;
+
+class KeyFile extends KeySource
 {
     /**
      * Init the object and set the value directly from the string

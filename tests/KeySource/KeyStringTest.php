@@ -13,14 +13,11 @@ class KeyStringTest extends TestCase
         $this->assertEquals($keyString, $key->getContent());
     }
 
-    /**
-     * Test what happens when a non-string is passed to the constructor
-     *
-     * @expectedException \InvalidArgumentException
-     */
     public function testInvalidInit()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $keyString = new \stdClass();
-        $key = new KeyString($keyString);   
+        new KeyString($keyString);
     }
 }

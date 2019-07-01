@@ -78,9 +78,9 @@ class Crypto
 
     /**
      * Decrypt the ciphertext value provided
-     * This method also catches values that may not be encrypted 
+     * This method also catches values that may not be encrypted
      * and returns them normally
-     * 
+     *
      * @param string $value Ciphertext (encrypted) string
      * @return mixed The value if it could be decrypted, otherwse null
      */
@@ -89,7 +89,7 @@ class Crypto
         try {
             $keyAscii = trim($this->key->getContent());
             $value = DefuseCrypto::decrypt($value, DefuseKey::loadFromAsciiSafeString($keyAscii));
-            
+
             return $value;
         } catch (\Defuse\Crypto\Exception\CryptoException $e) {
             // The value probably wasn't encrypted, move along...

@@ -68,7 +68,7 @@ class Parser
      */
     public function loadFile($configPath)
     {
-        $contents = $this->decryptValues(\Psecio\SecureDotenv\File::read($configPath));
+        $contents = $this->decryptValues(File::read($configPath));
         return $contents;
     }
 
@@ -77,7 +77,7 @@ class Parser
      *
      * @param \Psecio\SecureDotenv\Crypto $crypto
      */
-    public function setCrypto(\Psecio\SecureDotenv\Crypto $crypto)
+    public function setCrypto(Crypto $crypto)
     {
         $this->crypto = $crypto;
     }
@@ -140,9 +140,9 @@ class Parser
             }
         }
 
-        return \Psecio\SecureDotenv\File::write($contents, $this->configPath);
+        return File::write($contents, $this->configPath);
     }
-    
+
     /**
      * Get the contents of the current configuration file
      *
