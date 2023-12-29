@@ -23,12 +23,12 @@
         }
     },
     "require":{
-        "php": ">=7.1",
+        "php": "^7.4 || ^8.0",
         "defuse/php-encryption": "^2.2",
         "enygma/cmd": "^0.4.0",
         "league/climate": "^3.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.1"
+        "phpunit/phpunit": "^7.1 || ^9"
     }
 }
