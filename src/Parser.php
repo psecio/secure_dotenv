@@ -34,7 +34,6 @@ class Parser
             $configPath = __DIR__.'/.env';
         }
         $this->setConfigPath($configPath);
-        $this->contents = $this->loadFile($configPath);
     }
 
     /**
